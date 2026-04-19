@@ -1,0 +1,36 @@
+
+
+int main(void){
+     int a;
+    char d;
+    a = 5;
+    d = 'a';
+
+    if(a == b){
+        
+    } else{
+        v='j';
+        
+    }
+    if(a < b){
+        a  = 85
+    }
+    if(a > b){
+        b = 174;
+    }
+    if(a && b){
+            a = a -b ;
+            a -= b ;
+    }
+    if(a || b){
+        if( a > 4){
+            a = 5;
+        } else {
+            b = 96;
+        }
+    }
+    if(!a || b){
+
+    }
+    return 0;
+}

@@ -1,0 +1,10 @@
+
+
+int main(void){
+    int a = 0;
+    char d;
+    
+    d = 'a';
+
+    return 0;
+}

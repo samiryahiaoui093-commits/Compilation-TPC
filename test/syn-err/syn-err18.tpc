@@ -1,0 +1,134 @@
+struct aircraft {
+    int height, width;
+    struct aled suivant;
+    
+};
+struct aled {
+    int height, width;
+    struct aircraft suivant;
+    
+};
+struct hot {
+    int  width;
+    struct aircraft suivant,aret;
+    
+};
+struct aled {
+    char v;
+    char f,t;
+    struct aircraft suivant;
+    
+};
+struct aled {
+    int height, width;
+    struct aircraft suivant;
+    
+};
+struct aled {
+    int height, width;
+    struct aircraft suivant;
+    
+};
+struct aled {
+    int height, width;
+    struct aircraft suivant;
+    
+};
+int carre(int n, char c){
+    return n*n;
+
+
+// premier commentaire
+/*
+* deuxieme commentaire
+*/
+void arab(int a){
+    struct cold {
+        int height, width;
+        struct aircraft suivant;
+    };
+    int c,b,n,f;
+    char t,y,u,i;
+    return 0;
+}
+void t(void){
+    return ;
+}
+
+char b(void){
+    return 'a';
+}
+
+int main(void){
+    struct aircraft my_plane, my_shuttle, my_satellite;
+    struct aled corde;
+    int tess;
+    int sat;
+    char v;
+   
+    int a;
+    int b;
+    my_plane.height = 4;
+    my_plane.suivant = corde.height;
+    if ( (tess <= sat) && (tess > sat) || (tess >= sat)){
+        int z;
+        tess = tess + 9;
+        tess = tess * 9;
+        tess = arab(a);
+        tess = arab(corde.height);
+        tess = arab(arab(corde.height));
+    } else {
+        sat = sat - 9;
+        sat = sat / 9;
+    while(a < b) {
+        a = a + 1 -1 -1 -1;
+        a = 8 +  -41 / 5 -1 * 8;
+        a = 8 - 1 +5 *4 -5 / 3;
+    }
+    }    
+    tess = tess % 2;
+    if(a >= b){
+        v = 'a';
+        v ='\n';
+        v = 'a';
+
+        v = 'b';
+
+        v = 'c';
+        v = 'd';
+
+
+        v = '0';
+        v = '\0';
+        {
+        v ='9';
+        }
+
+
+
+    }
+    if(a == b){
+        
+    } else{
+        v='j';
+        
+    }
+    if(a < b){
+
+    }
+    if(a > b){
+
+    }
+    if(a && b){
+
+    }
+    if(a || b){
+
+    }
+    if(!a || b){
+
+    }
+   
+    tess=0;
+    return 0;
+} */

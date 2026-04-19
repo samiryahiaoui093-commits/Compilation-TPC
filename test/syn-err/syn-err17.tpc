@@ -1,0 +1,40 @@
+struct first {
+    int a,b,c,g,d;
+    char s;
+};
+
+
+struct second {
+    char s;
+    struct first a;
+};
+
+void newFirst(int a,int b int c ,int g,int d ,char s){
+    struct first res;
+    res.a =a;
+    res.b =b;
+    res.c =c;
+    res.g = g;
+    res.d = d;
+    return res;
+    res.s=s;
+    
+
+}
+struct second aled(int a,struct first b){
+    struct second a ;
+    a.s = 'a';
+    a.a = b;
+    return a;
+
+}
+
+int main(void){
+    struct first a ;
+    a.a =   63;
+    if( a.a > 5){
+        return 5 ;
+    } 
+
+    return 0;
+}

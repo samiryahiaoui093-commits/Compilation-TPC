@@ -1,0 +1,13 @@
+struct first {
+    int a,b,c,g,d;
+    char s;
+};
+struct first {
+    
+};
+int main(void){
+    struct first a ;
+
+
+    return 0;
+}

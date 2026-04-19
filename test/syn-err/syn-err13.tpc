@@ -1,0 +1,16 @@
+struct first {
+    int a,b,c,g,d;
+    char s;
+};
+
+
+struct secont {
+    char s;
+     first a;
+};
+int main(void){
+    struct first a ;
+    a.a =   63;
+
+    return 0;
+}

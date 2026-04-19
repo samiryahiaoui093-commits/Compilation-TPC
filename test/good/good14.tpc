@@ -1,0 +1,24 @@
+struct first {
+    int a,b,c,g,d;
+    char s;
+};
+
+
+struct second {
+    char s;
+    struct first a;
+};
+
+struct second aled(int a,struct first b){
+    struct second a ;
+    a.s = 'a';
+    a.a = b;
+    return a;
+
+}
+int main(void){
+    struct first a ;
+    a.a =   63;
+
+    return 0;
+}

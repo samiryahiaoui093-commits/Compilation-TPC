@@ -1,0 +1,51 @@
+
+
+int carre(int n){
+    return n*n; 
+}
+
+char id(char d){
+    return d;
+}
+char two(char d){
+    char a;
+    a= '2';
+    return a;
+}
+
+
+int main(void){
+     int a;
+    char d;
+    a = 5;
+    d = 'a';
+
+   
+    while (a > 0){
+         b = b+ 1;
+         a = a - 1;
+          if(a == b){
+        
+        } else{
+            v='j';
+            
+        }
+        if(a < b){
+            b = b + 17;
+        }
+        if(a > b){
+            a = 9; 
+        }
+        if(a && b){
+            b = b * a;
+        }
+        if(a || b){
+            b = a / b;
+        }
+        if(!a || b){
+            a = a - b;
+        }
+    }
+    
+    return 0;
+}
