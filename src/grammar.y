@@ -416,6 +416,8 @@ FB  :  FB EQ M {
     ;
 M   :  M ORDER E {
         $$ = newNode(NODE_ORDER,NULL,NULL);
+        $$->kind = KIND_IDENT;
+        $$->identv = strdup($2);
         addChild($$,$1);
         addChild($$,$3);
     }
@@ -462,7 +464,10 @@ F   :  ADDSUB F {
     |  IDENT '(' Arguments  ')'{ $$ = newNode(NODE_IDENT,NULL,$3);
                                 $$->identv =strdup($1);
                                 }
-    |  IDENT {$$ = newNode(NODE_IDENT,NULL,NULL);}
+    |  IDENT {$$ = newNode(NODE_IDENT,NULL,NULL);
+                $$->kind = KIND_IDENT;
+                $$->identv = strdup($1);
+}
     ;
 
     ;

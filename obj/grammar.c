@@ -659,9 +659,9 @@ static const yytype_int16 yyrline[] =
      201,   210,   215,   223,   233,   248,   254,   257,   264,   276,
      284,   300,   301,   304,   313,   323,   330,   339,   344,   354,
      360,   367,   372,   380,   384,   387,   388,   391,   392,   394,
-     400,   402,   407,   409,   415,   417,   422,   424,   431,   433,
-     440,   442,   447,   452,   453,   457,   462,   465,   470,   471,
-     474,   478
+     400,   402,   407,   409,   415,   417,   424,   426,   433,   435,
+     442,   444,   449,   454,   455,   459,   464,   467,   475,   476,
+     479,   483
 };
 #endif
 
@@ -1756,20 +1756,22 @@ yyreduce:
 #line 417 "src/grammar.y"
                  {
         (yyval.node) = newNode(NODE_ORDER,NULL,NULL);
+        (yyval.node)->kind = KIND_IDENT;
+        (yyval.node)->identv = strdup((yyvsp[-1].identv));
         addChild((yyval.node),(yyvsp[-2].node));
         addChild((yyval.node),(yyvsp[0].node));
     }
-#line 1763 "obj/grammar.c"
+#line 1765 "obj/grammar.c"
     break;
 
   case 46: /* M: E  */
-#line 422 "src/grammar.y"
+#line 424 "src/grammar.y"
          {(yyval.node) = (yyvsp[0].node);}
-#line 1769 "obj/grammar.c"
+#line 1771 "obj/grammar.c"
     break;
 
   case 47: /* E: E ADDSUB T  */
-#line 424 "src/grammar.y"
+#line 426 "src/grammar.y"
                   {
         (yyval.node) = newNode(NODE_ADDSUB,NULL,NULL);
         (yyval.node)->kind = KIND_CHAR;
@@ -1777,17 +1779,17 @@ yyreduce:
         addChild((yyval.node),(yyvsp[-2].node));
         addChild((yyval.node),(yyvsp[0].node));
     }
-#line 1781 "obj/grammar.c"
+#line 1783 "obj/grammar.c"
     break;
 
   case 48: /* E: T  */
-#line 431 "src/grammar.y"
+#line 433 "src/grammar.y"
          {(yyval.node) = (yyvsp[0].node);}
-#line 1787 "obj/grammar.c"
+#line 1789 "obj/grammar.c"
     break;
 
   case 49: /* T: T DIVSTAR F  */
-#line 433 "src/grammar.y"
+#line 435 "src/grammar.y"
                    {
         (yyval.node) = newNode(NODE_DIVSTAR,NULL,NULL);
         (yyval.node)->kind = KIND_CHAR;
@@ -1795,103 +1797,106 @@ yyreduce:
         addChild((yyval.node),(yyvsp[-2].node));
         addChild((yyval.node),(yyvsp[0].node));
     }
-#line 1799 "obj/grammar.c"
+#line 1801 "obj/grammar.c"
     break;
 
   case 50: /* T: F  */
-#line 440 "src/grammar.y"
+#line 442 "src/grammar.y"
          {(yyval.node) = (yyvsp[0].node);}
-#line 1805 "obj/grammar.c"
+#line 1807 "obj/grammar.c"
     break;
 
   case 51: /* F: ADDSUB F  */
-#line 442 "src/grammar.y"
+#line 444 "src/grammar.y"
                 {
         Node *f = newNode(NODE_ADDSUB,NULL,NULL);
         addChild(f,(yyvsp[0].node));
         (yyval.node) = f;
         }
-#line 1815 "obj/grammar.c"
+#line 1817 "obj/grammar.c"
     break;
 
   case 52: /* F: '!' F  */
-#line 447 "src/grammar.y"
+#line 449 "src/grammar.y"
              {
         Node *f = newNode(NODE_NOT,NULL,NULL);
         addChild(f,(yyvsp[0].node));
         (yyval.node) = f;
         }
-#line 1825 "obj/grammar.c"
+#line 1827 "obj/grammar.c"
     break;
 
   case 53: /* F: '(' Exp ')'  */
-#line 452 "src/grammar.y"
+#line 454 "src/grammar.y"
                    {(yyval.node) = (yyvsp[-1].node);}
-#line 1831 "obj/grammar.c"
+#line 1833 "obj/grammar.c"
     break;
 
   case 54: /* F: NUM  */
-#line 453 "src/grammar.y"
+#line 455 "src/grammar.y"
            {(yyval.node) = newNode(NODE_NUM,NULL,NULL);
             (yyval.node)->intv = (yyvsp[0].intv);
             (yyval.node)->kind = KIND_INT;
             }
-#line 1840 "obj/grammar.c"
+#line 1842 "obj/grammar.c"
     break;
 
   case 55: /* F: CHARACTER  */
-#line 457 "src/grammar.y"
+#line 459 "src/grammar.y"
                  {
         (yyval.node) = newNode(NODE_CHAR,NULL,NULL);
         (yyval.node)->charv = (yyvsp[0].charv);
         (yyval.node)->kind = KIND_CHAR;
     }
-#line 1850 "obj/grammar.c"
+#line 1852 "obj/grammar.c"
     break;
 
   case 56: /* F: IDENT '(' Arguments ')'  */
-#line 462 "src/grammar.y"
+#line 464 "src/grammar.y"
                                { (yyval.node) = newNode(NODE_IDENT,NULL,(yyvsp[-1].node));
                                 (yyval.node)->identv =strdup((yyvsp[-3].identv));
                                 }
-#line 1858 "obj/grammar.c"
+#line 1860 "obj/grammar.c"
     break;
 
   case 57: /* F: IDENT  */
-#line 465 "src/grammar.y"
-             {(yyval.node) = newNode(NODE_IDENT,NULL,NULL);}
-#line 1864 "obj/grammar.c"
+#line 467 "src/grammar.y"
+             {(yyval.node) = newNode(NODE_IDENT,NULL,NULL);
+                (yyval.node)->kind = KIND_IDENT;
+                (yyval.node)->identv = strdup((yyvsp[0].identv));
+}
+#line 1869 "obj/grammar.c"
     break;
 
   case 58: /* Arguments: ListExp  */
-#line 470 "src/grammar.y"
+#line 475 "src/grammar.y"
                {(yyval.node) = (yyvsp[0].node);}
-#line 1870 "obj/grammar.c"
+#line 1875 "obj/grammar.c"
     break;
 
   case 59: /* Arguments: %empty  */
-#line 471 "src/grammar.y"
+#line 476 "src/grammar.y"
       {(yyval.node) = NULL;}
-#line 1876 "obj/grammar.c"
+#line 1881 "obj/grammar.c"
     break;
 
   case 60: /* ListExp: ListExp ',' Exp  */
-#line 474 "src/grammar.y"
+#line 479 "src/grammar.y"
                        {
                  (yyval.node) = (yyvsp[-2].node);
                  addSibling((yyval.node),(yyvsp[0].node));
                         }
-#line 1885 "obj/grammar.c"
+#line 1890 "obj/grammar.c"
     break;
 
   case 61: /* ListExp: Exp  */
-#line 478 "src/grammar.y"
+#line 483 "src/grammar.y"
            {(yyval.node) = (yyvsp[0].node);}
-#line 1891 "obj/grammar.c"
+#line 1896 "obj/grammar.c"
     break;
 
 
-#line 1895 "obj/grammar.c"
+#line 1900 "obj/grammar.c"
 
       default: break;
     }
@@ -2084,7 +2089,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 480 "src/grammar.y"
+#line 485 "src/grammar.y"
 
 int main(int argc,char ** argv) {
     int ret = yyparse();
