@@ -1,38 +1,38 @@
 struct aircraft {
     int height, width;
     struct aled suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct hot {
     int  width;
     struct aircraft suivant,aret;
-    
+
 };
 struct aled {
     char v;
     char f,t;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 int carre(int n, char c){
     return n*n;
@@ -70,7 +70,7 @@ int main(void){
     int tess;
     int sat;
     char v;
-   
+
     int a;
     int b;
      my_plane.height = 4;
@@ -78,6 +78,7 @@ int main(void){
     my_plane.suivant = corde.height +  my_plane.width ;
     corde.height = 5;
     corde.f = 'x';
+    arab(1);
     if ( (tess <= sat) && (tess > sat) || (tess >= sat) && (tess != sat)){
         tess = tess + 9;
         tess = tess * 9;
@@ -85,10 +86,10 @@ int main(void){
         tess = arab(corde.height);
         tess = arab(arab(corde.height));
     }
-   
+
     tess=0;
     return 0;
-} 
+}
 
 int hold(int a){
     return 754;
