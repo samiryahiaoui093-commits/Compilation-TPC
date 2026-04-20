@@ -7,10 +7,10 @@ int main(void){
     d = 'a';
 
     if(a == b){
-        
+        a = 5 - (5*5);
     } else{
         v='j';
-        
+
     }
     if(a < b){
 

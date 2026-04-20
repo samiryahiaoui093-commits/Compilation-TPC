@@ -151,7 +151,7 @@ Prog:    DeclVars DeclFoncts {
 DeclVars:
         { $$ = newNode(NODE_DECLVAR,NULL,NULL);}
     |   DeclVars Sdecl {
-        addSibling($1,$2);
+        addChild($1,$2);
         $$ = $1;
     }
     |   DeclVars StructDecl {
@@ -166,8 +166,9 @@ Sdecl:
         $$ = newNode(NODE_DECLVAR,NULL,NULL);
         Node *d = newNode(NODE_TYPE,NULL,NULL);
         d->identv = strdup($1);
-        d->kind =3;
-        addSibling($$,d);
+        d->kind =KIND_IDENT;
+        addChild($$,d);
+        addSibling(d,$2);
 
     }
     | STRUCT IDENT Declarateurs ';' {
@@ -220,24 +221,32 @@ DeclVstruct:
 ;
 Declarateurs:
        Declarateurs ',' IDENT {
-        Node *listNode = newNode(NODE_DECLVAR, $1, NULL);
-        $$ = listNode;
+
+        $$ = $1;
         Node *n = newNode(NODE_IDENT, NULL, NULL);
-        n->identv = strdup($3);
-        n->kind = KIND_IDENT;
-        addChild($$, n);
+        if (n !=NULL){
+            n->identv = strdup($3);
+            n->kind = KIND_IDENT;
+        }
+        addSibling($$, n);
        }
     | IDENT {
-        Node *n = newNode(NODE_IDENT, NULL, NULL);
-        n->identv = strdup($1);
-        n->kind = KIND_IDENT;
-        Node *listNode = newNode(NODE_DECLVAR, n, NULL);
-        $$ = listNode;
+
+        if( $1 != NULL){
+            Node *n = newNode(NODE_IDENT, NULL, NULL);
+            n->identv = strdup($1);
+            n->kind = KIND_IDENT;
+            $$ = n;
+        } else {
+            $$ = NULL;
+        }
+
+
     }
 ;
 DeclFoncts:
        DeclFoncts DeclFonct {
-        $$ = newNode(NODE_DECLFNCT,NULL,NULL);
+        $$ = newNode(NODE_FNCS,NULL,NULL);
         addSibling($$,$1);
         addSibling($$,$2);
 
@@ -255,10 +264,14 @@ EnTeteFonct:
     TYPE IDENT '(' Parametres ')' {
         $$ = newNode(NODE_DECLFNCT,NULL,NULL);
         Node *p = newNode(NODE_TYPE,NULL,NULL);
-        Node*ident = newNode(NODE_IDENT,NULL,NULL);
-        addChild(p,ident);
+        p->kind =KIND_IDENT;
+        p->identv = strdup($1);
+        Node *i = newNode(NODE_IDENT,NULL,NULL);
+        i->kind = KIND_IDENT;
+        i->identv = strdup($2);
+        addSibling(p,i);
         addChild($$,p);
-        addChild($$,$4);
+
     }
     |  VOID IDENT '(' Parametres ')'{
         $$ = newNode(NODE_DECLFNCT,NULL,NULL);
@@ -340,7 +353,9 @@ Instr:
        }
     |  IF '(' Exp ')' Instr {$$ = newNode(NODE_IF,NULL,NULL);
             addChild($$,$3);
-            addChild($$,$5);
+            Node *instr = newNode(NODE_INSTR,NULL,NULL);
+            addChild(instr,$5);
+            addChild($$,instr);
     }
     |  IF '(' Exp ')' Instr ELSE Instr {$$ = newNode(NODE_IF,NULL,NULL);
             Node *elsenode = newNode(NODE_ELSE,NULL,NULL);
@@ -369,7 +384,8 @@ Instr:
     |  '{' SuiteInstr '}'{
         $$ = $2;
     }
-    |  ';' {$$ = NULL;}
+    |  ';' {$$ = newNode(NODE_INSTR,NULL,NULL);}
+     |{ $$ = newNode(NODE_INSTR,NULL,NULL);}
     ;
 Rval:
     {$$=NULL;}
@@ -407,6 +423,8 @@ M   :  M ORDER E {
     ;
 E   :  E ADDSUB T {
         $$ = newNode(NODE_ADDSUB,NULL,NULL);
+        $$->kind = KIND_CHAR;
+        $$->charv = $2;
         addChild($$,$1);
         addChild($$,$3);
     }
@@ -414,6 +432,8 @@ E   :  E ADDSUB T {
     ;
 T   :  T DIVSTAR F {
         $$ = newNode(NODE_DIVSTAR,NULL,NULL);
+        $$->kind = KIND_CHAR;
+        $$->charv = $2;
         addChild($$,$1);
         addChild($$,$3);
     }
