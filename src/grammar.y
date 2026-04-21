@@ -79,6 +79,10 @@ const char* labelToString(label_t label) {
         case NODE_EXP: return "EXP";
         case NODE_ASSIGN: return "ASSIGN";
         case NODE_VAR_ASSIGN: return "VAR_ASSIGN";
+        case NODE_FNCS: return "DECLFUNCTS";
+        case NODE_FUNCTION_CALL: return "FUNCTION_CALL";
+        case NODE_FUNCTION_HEADER: return "FUNCTION_HEADER";
+        case NODE_ARGUMENTS: return "ARGUMENTS";
         default: return "UNKNOWN";
     }
 }
@@ -196,6 +200,7 @@ StructDecl:
 Type:
     TYPE {
         $$ = newNode(NODE_TYPE, NULL, NULL);
+        $$->kind = KIND_IDENT;
         $$->identv = strdup($1);
     }
     | STRUCT IDENT {
@@ -209,7 +214,7 @@ Type:
 DeclVstruct:
     DeclVstruct Type Declarateurs ';' {
         addChild($1, $2);
-        addChild($1, $3);
+        addChild($2, $3);
         $$ = $1;
     }
   | Type Declarateurs ';' {
@@ -246,10 +251,9 @@ Declarateurs:
 ;
 DeclFoncts:
        DeclFoncts DeclFonct {
-        $$ = newNode(NODE_FNCS,NULL,NULL);
-        addSibling($$,$1);
-        addSibling($$,$2);
-
+        $$ = $1;
+        if($2 != NULL);
+            addSibling($$,$2);
        }
     |  DeclFonct {$$ = $1;}
     ;
@@ -262,29 +266,38 @@ DeclFonct:
     ;
 EnTeteFonct:
     TYPE IDENT '(' Parametres ')' {
-        $$ = newNode(NODE_DECLFNCT,NULL,NULL);
+        $$ = newNode(NODE_FUNCTION_HEADER,NULL,NULL);
         Node *p = newNode(NODE_TYPE,NULL,NULL);
         p->kind =KIND_IDENT;
         p->identv = strdup($1);
         Node *i = newNode(NODE_IDENT,NULL,NULL);
         i->kind = KIND_IDENT;
         i->identv = strdup($2);
+
         addSibling(p,i);
         addChild($$,p);
-
+        addSibling(p,$4);
     }
     |  VOID IDENT '(' Parametres ')'{
         $$ = newNode(NODE_DECLFNCT,NULL,NULL);
         Node *p = newNode(NODE_VOID,NULL,NULL);
-        Node*ident = newNode(NODE_IDENT,NULL,NULL);
-        addChild(p,ident);
+        p->kind =KIND_IDENT;
+        p->identv = "void";
+        Node *i = newNode(NODE_IDENT,NULL,NULL);
+        i->kind = KIND_IDENT;
+        i->identv = strdup($2);
+        addChild(p,i);
         addChild($$,p);
         addChild($$,$4);
     }
     | STRUCT IDENT IDENT '(' Parametres ')'  {
         $$ = newNode(NODE_DECLFNCT,NULL,NULL);
         Node *p = newNode(NODE_IDENT,NULL,NULL);
+        p->kind = KIND_IDENT;
+        p->identv = strdup($2);
         Node*ident = newNode(NODE_IDENT,NULL,NULL);
+        ident->kind = KIND_IDENT;
+        ident->identv = strdup($3);
         Node* structure = newNode(NODE_STRUCT,NULL,NULL);
         addChild(structure,p);
         addChild($$,structure);
@@ -297,14 +310,18 @@ EnTeteFonct:
     }
     ;
 Parametres:
-       VOID {$$ = newNode(NODE_TYPE,NULL,NULL);}
+       VOID {$$ = newNode(NODE_TYPE,NULL,NULL);
+                $$->kind = KIND_IDENT;
+                $$->identv = "void";
+   }
+
     |  ListTypVar {$$ = $1;}
     ;
 ListTypVar:
        ListTypVar ',' Type IDENT {
-        $$ = newNode(NODE_DECLVAR,NULL,NULL);
-        addChild($$,$1);
-        addSibling($1,$3);
+
+        $$ = $1;
+        addChild($1,$3);
          Node * forth = newNode(NODE_IDENT,NULL,NULL);
         forth->identv =strdup($4);
         forth->kind = KIND_IDENT;
@@ -316,7 +333,7 @@ ListTypVar:
         Node *ident = newNode(NODE_IDENT, NULL, NULL);
         ident->identv = strdup($2);
         ident->kind = KIND_IDENT;
-        addChild($1, ident);
+        addSibling($1, ident);
 
     }
     ;
@@ -370,7 +387,7 @@ Instr:
         addChild($$,$5);
     }
     |  IDENT '(' Arguments  ')' ';'{
-        $$ = newNode(NODE_FUNCTION,NULL,NULL);
+        $$ = newNode(NODE_FUNCTION_CALL,NULL,NULL);
         Node * second = newNode(NODE_IDENT,NULL,NULL);
         second->identv =strdup($1);
         second->kind = KIND_IDENT;
@@ -461,9 +478,15 @@ F   :  ADDSUB F {
         $$->charv = $1;
         $$->kind = KIND_CHAR;
     }
-    |  IDENT '(' Arguments  ')'{ $$ = newNode(NODE_IDENT,NULL,$3);
-                                $$->identv =strdup($1);
-                                }
+    |  IDENT '(' Arguments  ')'{
+        $$ = newNode(NODE_FUNCTION_CALL,NULL,NULL);
+        Node * second = newNode(NODE_IDENT,NULL,NULL);
+        second->identv =strdup($1);
+        second->kind = KIND_IDENT;
+        addChild($$,second);
+        addSibling(second,$3);
+
+         }
     |  IDENT {$$ = newNode(NODE_IDENT,NULL,NULL);
                 $$->kind = KIND_IDENT;
                 $$->identv = strdup($1);

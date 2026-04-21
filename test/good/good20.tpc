@@ -83,7 +83,7 @@ int main(void){
         tess = tess + 9;
         tess = tess * 9;
         tess = arab(a);
-        tess = arab(corde.height);
+        tess = arab(corde.height,558,26);
         tess = arab(arab(corde.height));
     }
 
