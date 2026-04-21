@@ -16,6 +16,7 @@ typedef enum {
 typedef struct Node {
     label_t label;
     int kind;
+    int line,column;
     union {
         int intv;
         char charv;
@@ -25,3 +26,17 @@ typedef struct Node {
 } Node;
 
 #endif
+
+
+
+const char* labelToString(label_t label);
+
+void addSibling(Node *node, Node *nextSibling);
+
+void addChild(Node *node, Node *nextChild);
+
+Node* newNode(label_t label, Node *firstChild, Node *nextSibling);
+
+const char* labelToString(label_t label);
+
+void printTree(Node *root, int indent);
