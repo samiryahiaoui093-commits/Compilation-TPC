@@ -17,6 +17,7 @@ typedef struct Node {
     label_t label;
     int kind;
     int line,column;
+    int argument_number;
     union {
         int intv;
         char charv;
@@ -35,7 +36,7 @@ void addSibling(Node *node, Node *nextSibling);
 
 void addChild(Node *node, Node *nextChild);
 
-Node* newNode(label_t label, Node *firstChild, Node *nextSibling);
+Node* newNode(label_t label);
 
 const char* labelToString(label_t label);
 

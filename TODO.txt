@@ -1,7 +1,17 @@
---Fix l'arbre
-Pour que l'arbre soit pret pour la table des symbole
--Type affiché correctement le type des variable dans les struct
--Modifier les node des fonction pour clarifié les appels
--Modifier les structure pour que la distinction des nom des structure typé soit plus claire
--Les commentaire doivent etre généré
--Modifier possiblement les IDENT pour possiblement acceder autant que possible de champs type  :  aled.setup.arabe
+Faire la table des symbole
+
+-Table des symbole
+Fonctions
+Variable global
+Variable local
+Structures initialisé
+Structure déclarer
+
+faire un tableau des appels de fonction pour vérifier que la définition est présente et quelle soit bien respecter
+
+- Integrer les insertion pour la table des symbole
+- Fonction pour crée une variable des différent type
+Noeud arbre -> create Variable -> Create  Chained node -> Insert
+- effecteur des lookup sur les instruction pour verifier
+pour les structure et fonction , potentiel liste chaine pour stoquer les arguments
+-

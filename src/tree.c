@@ -60,7 +60,7 @@ void printTree(Node *node) {
   for (int i = 1; i < depth; i++) { // 2502 = vertical line
     printf(rightmost[i] ? "    " : "\u2502   ");
   }
-  if (depth > 0) { // 2514 = L form; 2500 = horizontal line; 251c = vertical line and right horiz 
+  if (depth > 0) { // 2514 = L form; 2500 = horizontal line; 251c = vertical line and right horiz
     printf(rightmost[depth] ? "\u2514\u2500\u2500 " : "\u251c\u2500\u2500 ");
   }
   printf("%s", StringFromLabel[node->label]);

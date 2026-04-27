@@ -1,6 +1,6 @@
 
 
-int main(void){
+int cold(int a ,char b){
     int a;
     char d;
     a = 5;

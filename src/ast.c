@@ -20,7 +20,7 @@ void addChild(Node *node, Node *nextChild) {
     }
 }
 
-Node* newNode(label_t label, Node *firstChild, Node *nextSibling) {
+Node* newNode(label_t label) {
     Node *node = (Node*)malloc(sizeof(Node));
     if(node == NULL) exit(1);
     node->intv = 0;
@@ -28,8 +28,7 @@ Node* newNode(label_t label, Node *firstChild, Node *nextSibling) {
     node->identv = NULL;
     node->label = label;
     node->kind = KIND_NONE;
-    node->firstChild = firstChild;
-    node->nextSibling = nextSibling;
+
     return node;
 }
 

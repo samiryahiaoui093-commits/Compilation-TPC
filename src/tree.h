@@ -1,13 +1,13 @@
 /* tree.h */
 
+
 typedef enum {
-  E,
-  T,
-  divstar,
-  id
-  /* list all other node labels, if any */
-  /* The list must coincide with the string array in tree.c */
-  /* To avoid listing them twice, see https://stackoverflow.com/a/10966395 */
+    NODE_PROGRAM, NODE_NUM, NODE_IDENT, NODE_ADDSUB, NODE_DIVSTAR,
+    NODE_VOID, NODE_IF, NODE_ELSE, NODE_RETURN, NODE_AND, NODE_OR,
+    NODE_EQ, NODE_ORDER, NODE_TYPE, NODE_DECLVAR, NODE_DECLVARSTRUCT,
+    NODE_ENTETE, NODE_PARAMETRE, NODE_CORPS, NODE_INSTR, NODE_DECLFNCT,
+    NODE_STRUCT, NODE_CHAR, NODE_WHILE, NODE_FUNCTION, NODE_NOT,
+    NODE_EXP, NODE_ASSIGN, NODE_VAR_ASSIGN,NODE_FNCS,NODE_FUNCTION_CALL,NODE_FUNCTION_HEADER,NODE_ARGUMENTS
 } label_t;
 
 typedef struct Node {
