@@ -10,13 +10,18 @@ typedef enum {
     NODE_EQ, NODE_ORDER, NODE_TYPE, NODE_DECLVAR, NODE_DECLVARSTRUCT,
     NODE_ENTETE, NODE_PARAMETRE, NODE_CORPS, NODE_INSTR, NODE_DECLFNCT,
     NODE_STRUCT, NODE_CHAR, NODE_WHILE, NODE_FUNCTION, NODE_NOT,
-    NODE_EXP, NODE_ASSIGN, NODE_VAR_ASSIGN,NODE_FNCS,NODE_FUNCTION_CALL,NODE_FUNCTION_HEADER,NODE_ARGUMENTS
+    NODE_EXP, NODE_ASSIGN, NODE_VAR_ASSIGN,NODE_FNCS,NODE_FUNCTION_CALL,
+    NODE_FUNCTION_HEADER,NODE_ARGUMENTS,NODE_VARS,NODE_FIELD_ACCESS,NODE_DECLSTRUCT
 } label_t;
 
 typedef struct Node {
     label_t label;
     int kind;
-    int line,column;
+    union {
+        int definition_line;
+        int line;
+    };
+    char* function_name;
     int argument_number;
     union {
         int intv;

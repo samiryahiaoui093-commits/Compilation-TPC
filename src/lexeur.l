@@ -43,7 +43,7 @@ int lines = 1 ;
 "while"                                 {column+= strlen(yytext); return WHILE;}
 "return"                                 {column+= strlen(yytext); return RETURN;}
 "struct"                                {column+= strlen(yytext); return STRUCT;}
-"("|")"|"{"|"}"|","|";"|"="             {column+= strlen(yytext); return yytext[0];}
+"("|")"|"{"|"}"|","|";"|"="|"."             {column+= strlen(yytext); return yytext[0];}
 "&&"                                     {column+= strlen(yytext); return AND;}
 "||"                                     {column+= strlen(yytext); return OR;}
 "=="|"!="                                 {column+= strlen(yytext); return EQ;}
@@ -51,7 +51,6 @@ int lines = 1 ;
 "if"                                     {column+= strlen(yytext); return IF;}
 [+-]                                     {column+= strlen(yytext);yylval.charv = yytext[0];return ADDSUB;}
 "/"|"*"|"%"                             {column+= strlen(yytext);yylval.charv = yytext[0]; return DIVSTAR;}
-[a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*  { column+= strlen(yytext); yylval.identv = strdup(yytext); return IDENT; }
 [a-zA-Z_][a-zA-Z0-9_]*                    { column+= strlen(yytext); yylval.identv = strdup(yytext); return IDENT; }
 [0-9]+                                   { column+= strlen(yytext); yylval.intv = atoi(yytext);  return NUM;}
 '[^\\\n\t\r\v\f]'        { column+= strlen(yytext); yylval.charv = yytext[1]; return CHARACTER; }
