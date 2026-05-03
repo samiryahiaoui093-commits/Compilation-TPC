@@ -2,6 +2,14 @@
 
 int cold(int a ,char b){
     int a;
+    char a;
+    a = 5;
+    d = 'a';
+
+    return 0;
+}
+int got(void){
+    int a,v;
     char d;
     a = 5;
     d = 'a';

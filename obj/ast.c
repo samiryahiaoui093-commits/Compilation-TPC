@@ -22,16 +22,20 @@ void addChild(Node *node, Node *nextChild) {
 
 Node* newNode(label_t label) {
     Node *node = (Node*)malloc(sizeof(Node));
-    if(node == NULL) exit(1);
-    node->intv = 0;
-    node->charv = 0;
-    node->identv = NULL;
+    if (node == NULL) exit(1);
+
     node->label = label;
     node->kind = KIND_NONE;
+    node->firstChild = NULL;
+    node->nextSibling = NULL;
+    node->identv = NULL;
+    node->function_name = NULL;
+    node->intv = 0;
+    node->charv = 0;
+    node->definition_line = 0;
 
     return node;
 }
-
 const char* labelToString(label_t label) {
     switch(label) {
         case NODE_PROGRAM: return "PROGRAM";
@@ -67,6 +71,9 @@ const char* labelToString(label_t label) {
         case NODE_FUNCTION_CALL: return "FUNCTION_CALL";
         case NODE_FUNCTION_HEADER: return "FUNCTION_HEADER";
         case NODE_ARGUMENTS: return "ARGUMENTS";
+        case NODE_VARS: return "DECL_VARS";
+        case NODE_FIELD_ACCESS : return "FIELD_ACCESS";
+        case NODE_DECLSTRUCT : return "DECL_STRUCT";
         default: return "UNKNOWN";
     }
 }

@@ -45,10 +45,10 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 2 "src/grammar.y"
+#line 1 "src/grammar.y"
 
     #include "ast.h"
-
+    #include "symbol_table.h"
 
 #line 54 "obj/grammar.h"
 
@@ -86,7 +86,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "src/grammar.y"
+#line 22 "src/grammar.y"
 
     int intv;
     char charv;

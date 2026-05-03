@@ -1,38 +1,42 @@
+
+char a ;
+int b ;
+
 struct aircraft {
     int height, width;
     struct aled suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct hot {
     int  width;
     struct aircraft suivant,aret;
-    
+
 };
 struct aled {
     char v;
     char f,t;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 struct aled {
     int height, width;
     struct aircraft suivant;
-    
+
 };
 int carre(int n, char c){
     return n*n;
@@ -70,18 +74,6 @@ int main(void){
     int tess;
     int sat;
     char v;
-   /*
-   
-   
-   azd
-   alozf,k
-   apfkad,;azd lo,az;deuxiemeôapl
-   zlkl, deuxiemeôapll z
-   ,d
-   kja
-   zo
-   l ,kljapzofd ,j z, paoz,d $poak ikzk,djaz
-   */
     int a;
     int b;
      my_plane.height = 4;
@@ -96,7 +88,7 @@ int main(void){
         tess = arab(corde.height);
         tess = arab(arab(corde.height));
     }
-   
+
     tess=0;
     return 0;
-} 
+}

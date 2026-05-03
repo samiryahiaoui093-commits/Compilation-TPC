@@ -73,7 +73,7 @@ int main(void){
 
     int a;
     int b;
-     my_plane.height = 4;
+    my_plane.height = 4;
     my_plane.width = 10;
     my_plane.suivant = corde.height +  my_plane.width ;
     corde.height = 5;

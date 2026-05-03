@@ -34,7 +34,6 @@ Node* newNode(label_t label) {
     node->charv = 0;
     node->definition_line = 0;
 
-
     return node;
 }
 const char* labelToString(label_t label) {

@@ -1,7 +1,27 @@
+struct aircraft {
+    int height, width;
+    struct aled suivant;
+
+};
+struct aled {
+    int height, width;
+    struct aircraft suivant,aled,chien;
+    struct caled chui,un,avion;
+
+};
+struct hot {
+    int  width;
+    struct aircraft suivant ,aret;
+
+};
+struct aled {
+    char v;
+    char f;
+    struct aircraft suivant;
+
+};
+
+
 int main(void){
-    int a;
-    char d;
-    a = 5;
-    d = 'a';
     return 0;
 }
