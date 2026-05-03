@@ -230,6 +230,13 @@ Variable *create_variable(Node* node, string function_name) {
 
     return variable;
 }
+Variable * variable_from_parameters(string name,string function_name, int declaration_line){
+    Variable *variable = malloc(sizeof(Variable));
+    if (!variable) return NULL;
+    variable->
+
+
+}
 
 /* =========================
    STRUCTURE CREATION
@@ -348,6 +355,30 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
     insert_list(elem, lst, index);
 }
 
+Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[]) {
+    if (!key) return NULL;
+
+    int index = hash_index(key, 50);
+    Chained_Node* curr = lst[index];
+
+    while (curr) {
+        if (strcmp(curr->key, key) == 0 ) {
+            if ( strcmp(curr->variable->function_name,function_scope) == 0){
+                return curr;
+            }
+        }
+        curr = curr->next;
+    }
+
+    return NULL; // not found
+}
+
+void field_from_struct(Structure structure){
+
+}
+void parameters_from_function(Function function){
+
+}
 /* =========================
    FUNCTION DEBUG
 ========================= */
