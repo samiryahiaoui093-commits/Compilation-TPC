@@ -1,7 +1,9 @@
+#include <bits/posix2_lim.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "symbol_table.h"
 #include <string.h>
+#include <strings.h>
 #include "ast.h"
 
 /* =========================
@@ -237,8 +239,7 @@ Variable * variable_from_parameters(string name,string function_name, int declar
     variable->definition_line= declaration_line;
     variable->function_name = strdup(function_name);
     variable->type = strdup(type);
-
-
+    return variable;
 }
 
 /* =========================
@@ -379,7 +380,20 @@ Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[])
 void field_from_struct(Structure structure){
 
 }
-void parameters_from_function(Function function){
+void parameters_from_function(Function *function){
+    Variable * parameter;
+    Chained_Node * cn;
+    int index_hash;
+    for(int i = 0; i < function->argument_count -1;i++){
+        parameter = variable_from_parameters(function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
+        cn = malloc(sizeof(Chained_Node));
+        cn->key = function->name;
+        cn->next = NULL;
+        cn->tag = VARIABLE;
+        cn->variable = parameter;
+        index_hash = hash_index(function->argument_names[i], 50);
+        insert_list(cn,local_variable,index_hash);
+    }
 
 }
 /* =========================
@@ -467,6 +481,29 @@ void parse_tree(Node* root) {
     }
 }
 
+void dump_function_parameter(Chained_Node * node){
+    if(node){
+        for (Chained_Node *c = node; c; c = c->next) {
+            if (!c) continue;
+
+            switch (c->tag) {
+                case FUNCTION:
+
+                    if (c->function) {
+                        parameters_from_function(c->function);
+                        break;
+                    }
+                default: break;
+            }
+    }
+
+}
+}
+void dump_all_parameter(){
+    for(int i = 0; i < 50 ; i++){
+        dump_function_parameter(functions_definitions[i]);
+    }
+}
 void print_chain(Chained_Node *node) {
     for (Chained_Node *c = node; c; c = c->next) {
         if (!c) continue;
@@ -484,7 +521,9 @@ void print_chain(Chained_Node *node) {
                 break;
 
             case FUNCTION:
+
                 if (c->function) {
+
                     printf("[FUNC] %s : %s (args=%d, line %d)\n",
                         c->function->name,
                         c->function->type,

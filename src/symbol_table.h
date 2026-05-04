@@ -1,12 +1,21 @@
-#ifndef SYMBOL_TABLE_H
-#define SYMBOL_TABLE_H
+#ifndef SYMBOL_TABLE_UTILS_H
+#define SYMBOL_TABLE_UTILS_H
 
 #include "ast.h"
+
+/* =========================
+   TYPES
+========================= */
 
 typedef char* string;
 
 typedef enum {
-    FUNCTION, GLOBAL_VARIABLE, LOCAL_VARIABLE, STRUCTURE_INSTANCE, STRUCTURE, VARIABLE
+    FUNCTION,
+    GLOBAL_VARIABLE,
+    LOCAL_VARIABLE,
+    STRUCTURE_INSTANCE,
+    STRUCTURE,
+    VARIABLE
 } Tables;
 
 typedef struct {
@@ -51,25 +60,100 @@ typedef struct Chained_Node {
     struct Chained_Node *next;
 } Chained_Node;
 
-/* Tables globales */
+/* =========================
+   GLOBAL TABLES
+========================= */
+
 extern Chained_Node *local_variable[50];
 extern Chained_Node *global_variable[50];
 extern Chained_Node *functions_definitions[50];
 extern Chained_Node *structure_definitions[50];
 
-/* Fonctions AST */
+/* =========================
+   UTILITIES
+========================= */
 
+int len_CL(Node* node);
 
-/* Symbol table */
-void parse_tree(Node* root);
-void printFunction(Function *f);
+/* =========================
+   ARGUMENTS
+========================= */
 
-/* Création */
+void transfer_arguments(Node *list, string arguments_type[], string arguments_name[]);
+
+/* =========================
+   STRUCT FIELDS
+========================= */
+
+int count_structure_field(Node *field_list);
+void transfer_fields(Node *list, string arguments_type[], string arguments_name[]);
+
+/* =========================
+   FUNCTION CREATION
+========================= */
+
 Function *create_function(Node* node);
-Variable *create_variable(Node* node, string function_name);
-Structure *create_structure(Node * node, string function_name);
 
+/* =========================
+   VARIABLE CREATION
+========================= */
+
+Variable *create_variable(Node* node, string function_name);
+Variable *variable_from_parameters(string name, string function_name, int declaration_line, string type);
+
+/* =========================
+   STRUCTURE CREATION
+========================= */
+
+Structure *create_structure(Node *node, string function_name);
+
+/* =========================
+   CHAINED NODE
+========================= */
+
+Chained_Node *create_chained_node(Node* node);
+
+/* =========================
+   HASH TABLE
+========================= */
+
+int hash_index(string key, int taille);
+void insert_list(Chained_Node* node, Chained_Node* lst[], int index);
+void insert_hash(Node* node, Chained_Node* lst[]);
+Chained_Node *lookup_hash(char* key, string function_scope, Chained_Node* lst[]);
+
+/* =========================
+   PARAMETERS / FIELDS
+========================= */
+
+void field_from_struct(Structure structure);
+void parameters_from_function(Function *function);
+
+/* =========================
+   DEBUG / PRINT
+========================= */
+
+void printFunction(Function *f);
 void print_chain(Chained_Node *node);
 void print_symbol_tables();
 
-#endif
+/* =========================
+   HELPERS
+========================= */
+
+Node *get_function_body(Node *function);
+
+/* =========================
+   MAIN SYMBOL TABLE PASS
+========================= */
+
+void parse_tree(Node* root);
+
+/* =========================
+   PARAMETER DUMP
+========================= */
+
+void dump_function_parameter(Chained_Node *node);
+void dump_all_parameter();
+
+#endif /* SYMBOL_TABLE_UTILS_H */

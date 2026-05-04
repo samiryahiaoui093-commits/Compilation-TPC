@@ -73,18 +73,18 @@ int main(void){
 
     int a;
     int b;
-    my_plane.height = 4;
-    my_plane.width = 10;
-    my_plane.suivant = corde.height +  my_plane.width ;
-    corde.height = 5;
-    corde.f = 'x';
+    b=59;
+    v = a + 56;
+    c=866;
+
+
+
     arab(1);
     if ( (tess <= sat) && (tess > sat) || (tess >= sat) && (tess != sat)){
         tess = tess + 9;
         tess = tess * 9;
         tess = arab(a);
-        tess = arab(corde.height,558,26);
-        tess = arab(arab(corde.height));
+
     }
 
     tess=0;

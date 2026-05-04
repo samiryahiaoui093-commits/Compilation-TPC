@@ -1,5 +1,6 @@
 #include "ast.h"
 #include "symbol_table.h"
+#include <locale>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,14 +72,22 @@ int function_call_test(Node * function_call,string function_name,Chained_Node * 
     return TEST_FAILED;
 }
 
-void parse_instr(Node* instr){
+void parse_instr(Node* instr,int *error_count,string function_name){
 
     for(Node *current = instr; current ; current = current->nextSibling){
         switch (current->label) {
             case NODE_ASSIGN:
+                (*error_count)+= assign_test(current,function_name,local_variable);
+                break;
+
             case NODE_FUNCTION_CALL:
+                (*error_count)+= function_call_test(current,function_name, functions_definitions);
+                break;
             case NODE_IF:
                 // potentiel recursivité pour les if
+                parse_instr(current->firstChild->nextSibling,error_count,function_name);
+                break;
+
             default:
 
         }

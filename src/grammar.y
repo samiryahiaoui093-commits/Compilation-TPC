@@ -468,6 +468,7 @@ int main(int argc, char **argv) {
     }
     parse_tree(root);
     printf("arbre parsé\n");
+    dump_all_parameter();
     print_symbol_tables();
     return ret;
 }
