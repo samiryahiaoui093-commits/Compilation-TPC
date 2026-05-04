@@ -87,6 +87,7 @@ StructDecl:
     STRUCT IDENT '{' DeclVstruct '}' ';' {
         Node *var = newNode(NODE_DECLSTRUCT);
         Node *second = newNode(NODE_IDENT);
+        second->definition_line = lines;
         addChild(var, second);
         addSibling(second, $4);
         second->identv = strdup($2);

@@ -177,7 +177,7 @@ Function *create_function(Node* node) {
     if (params && params->firstChild)
         elements = len_CL(params->firstChild);
 
-    funct->argument_count = elements;
+    funct->argument_count = (elements > 0)? elements-1 : elements ;
 
     if (elements > 0) {
         funct->argument_type = malloc(sizeof(string) * elements);
@@ -261,7 +261,7 @@ Structure *create_structure(Node *node, string function_name) {
     if (!structure) return NULL;
 
     structure->name = structure_name->identv;
-    structure->definition_line = node->definition_line;
+    structure->definition_line = structure_name->definition_line;
 
     structure->argument_type = malloc(sizeof(string) * elements);
     structure->argument_names = malloc(sizeof(string) * elements);
@@ -351,12 +351,29 @@ void insert_list(Chained_Node* node, Chained_Node* lst[], int index) {
 
 void insert_hash(Node* node, Chained_Node* lst[]) {
     if (!node) return;
+    Chained_Node *elem;
+    if(node->label == NODE_DECLVAR){
+        for(Node* current = node->firstChild->nextSibling;current;current = current->nextSibling){
 
-    Chained_Node *elem = create_chained_node(node);
+            Variable * var = variable_from_parameters(current->identv,node->function_name,node->firstChild->definition_line,node->firstChild->identv);
+            Chained_Node * cn = (Chained_Node*)malloc(sizeof(Chained_Node));
+            int index = hash_index(current->identv, 50);
+            cn->variable = var;
+            cn->key = strdup(current->identv);
+            cn->tag = VARIABLE;
+            cn->next = NULL;
+            insert_list(cn, lst, index);
+
+
+        }
+
+    } else {
+    elem = create_chained_node(node);
     if (!elem || !elem->key) return;
-
     int index = hash_index(elem->key, 50);
     insert_list(elem, lst, index);
+    }
+    
 }
 
 Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[]) {
@@ -367,9 +384,12 @@ Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[])
 
     while (curr) {
         if (strcmp(curr->key, key) == 0 ) {
-            if ( strcmp(curr->variable->function_name,function_scope) == 0){
-                return curr;
-            }
+            if (curr->tag == VARIABLE && curr->variable) {
+                if (curr->variable->function_name && function_scope &&
+                    strcmp(curr->variable->function_name, function_scope) == 0) {
+                    return curr;
+    }
+}
         }
         curr = curr->next;
     }
@@ -390,7 +410,7 @@ void parameters_from_function(Function *function){
         cn->key = strdup(function->argument_names[i]);;
         cn->next = NULL;
         cn->tag = VARIABLE;
-        cn->variable = parameter;0x00007ffff7f0b31d in ?? () from /usr/lib/libc.so.6
+        cn->variable = parameter;
 
         index_hash = hash_index(function->argument_names[i], 50);
         insert_list(cn,local_variable,index_hash);
@@ -468,9 +488,7 @@ void parse_tree(Node* root) {
                     body->firstChild &&
                     body->firstChild->label == NODE_VARS) {
 
-                    for (Node *l_var = body->firstChild->firstChild;
-                         l_var;
-                         l_var = l_var->nextSibling) {
+                    for (Node *l_var = body->firstChild->firstChild;l_var;l_var = l_var->nextSibling) {
 
                         insert_hash(l_var, local_variable);
                     }
@@ -502,6 +520,7 @@ void dump_function_parameter(Chained_Node * node){
 }
 void dump_all_parameter(){
     for(int i = 0; i < 50 ; i++){
+        printf("%d",i);
         dump_function_parameter(functions_definitions[i]);
     }
 }

@@ -3,24 +3,15 @@
     {
       "name": "Default",
       "files": [
-        "Makefile",
-        "bin/tpcas",
-        "obj/ast.c",
-        "obj/ast.o",
-        "obj/grammar.c",
-        "obj/grammar.h",
         "obj/grammar.o",
-        "obj/lexeur.c",
         "obj/lexeur.o",
         "src/symbol_table.c",
-        "test/good/good1.tpc",
-        "test/good/good19.tpc",
-        "test/good/good20.tpc",
-        "test/good/good21.tpc",
         "obj/symbol_table.c",
-        "obj/symbol_table.o",
         ".vscode/changelists.json",
-        "src/ast.c"
+        "bin/tpcas",
+        "obj/symbol_table.o",
+        "src/grammar.y",
+        "obj/grammar.c"
       ]
     }
   ],
