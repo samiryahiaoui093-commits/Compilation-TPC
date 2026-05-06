@@ -26,6 +26,15 @@ int len_CL(Node* node) {
     return count;
 }
 
+int argument_count(Node* node) {
+    int count = 0;
+    for (Node* current = node; current; current = current->nextSibling){
+        for (Node* c = current; c; c = c->nextSibling){
+            count++;
+        }
+    }
+    return count;
+}
 /* =========================
    ARGUMENTS
 ========================= */
@@ -177,7 +186,7 @@ Function *create_function(Node* node) {
     if (params && params->firstChild)
         elements = len_CL(params->firstChild);
 
-    funct->argument_count = (elements > 0)? elements-1 : elements ;
+    funct->argument_count = (elements > 0)? elements : elements ;
 
     if (elements > 0) {
         funct->argument_type = malloc(sizeof(string) * elements);
@@ -239,6 +248,7 @@ Variable * variable_from_parameters(string name,string function_name, int declar
     variable->definition_line= declaration_line;
     variable->function_name = strdup(function_name);
     variable->type = strdup(type);
+    variable->table = VARIABLE;
     return variable;
 }
 
@@ -355,10 +365,9 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
     if(node->label == NODE_DECLVAR){
         for(Node* current = node->firstChild->nextSibling;current;current = current->nextSibling){
 
-            Variable * var = variable_from_parameters(current->identv,node->function_name,node->firstChild->definition_line,node->firstChild->identv);
             Chained_Node * cn = (Chained_Node*)malloc(sizeof(Chained_Node));
             int index = hash_index(current->identv, 50);
-            cn->variable = var;
+            cn->variable = variable_from_parameters(current->identv,node->function_name,node->definition_line,node->firstChild->identv);
             cn->key = strdup(current->identv);
             cn->tag = VARIABLE;
             cn->next = NULL;
@@ -373,7 +382,7 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
     int index = hash_index(elem->key, 50);
     insert_list(elem, lst, index);
     }
-    
+
 }
 
 Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[]) {
@@ -404,16 +413,19 @@ void parameters_from_function(Function *function){
     Variable * parameter;
     Chained_Node * cn;
     int index_hash;
-    for(int i = 0; i < function->argument_count -1;i++){
+    for(int i = 0; i <= function->argument_count -1;i++){
         parameter = variable_from_parameters(function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
+        printf("name : %s function_name: %s definition line :%d type : %s \n",function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
         cn = malloc(sizeof(Chained_Node));
         cn->key = strdup(function->argument_names[i]);;
         cn->next = NULL;
         cn->tag = VARIABLE;
         cn->variable = parameter;
+        printf("fonction crée");
 
         index_hash = hash_index(function->argument_names[i], 50);
         insert_list(cn,local_variable,index_hash);
+        printf("fonction inséré");
     }
 
 }
@@ -503,20 +515,14 @@ void parse_tree(Node* root) {
 void dump_function_parameter(Chained_Node * node){
     if(node){
         for (Chained_Node *c = node; c; c = c->next) {
-            if (!c) continue;
+            if (c)
+            parameters_from_function(c->function);
 
-            switch (c->tag) {
-                case FUNCTION:
-
-                    if (c->function) {
-                        parameters_from_function(c->function);
-                        break;
-                    }
-                default: break;
             }
+
     }
 
-}
+
 }
 void dump_all_parameter(){
     for(int i = 0; i < 50 ; i++){

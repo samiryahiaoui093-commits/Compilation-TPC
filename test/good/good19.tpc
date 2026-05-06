@@ -52,6 +52,10 @@ void arab(int a){
         struct aircraft suivant;
     };
     int c,b,n,f;
+
+
+
+
     char t,y,u,i;
     return 0;
 }

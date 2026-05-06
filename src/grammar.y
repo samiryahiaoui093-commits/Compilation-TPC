@@ -62,6 +62,7 @@ DeclVars:
 Sdecl:
     TYPE Declarateurs ';' {
         $$ = newNode(NODE_DECLVAR);
+        $$->definition_line = lines;
         // Associer le nom de la fonction courante (ou "global")
         $$->function_name = function_name ? strdup(function_name) : strdup("global");
         Node *d = newNode(NODE_TYPE);
@@ -250,7 +251,7 @@ ListTypVar:
         Node *ident = newNode(NODE_IDENT);
         ident->identv = strdup($2);
         ident->kind = KIND_IDENT;
-        addSibling($1, ident);
+        addChild($1, ident);
     }
 ;
 
@@ -468,8 +469,14 @@ int main(int argc, char **argv) {
         }
     }
     parse_tree(root);
+    for(int i = 0 ; i < 50 ; i++){
+        dump_function_parameter(functions_definitions[i]);
+        if (functions_definitions[i])
+        printFunction(functions_definitions[i]->function);
+    }
     printf("arbre parsé\n");
-    dump_all_parameter();
+    print_symbol_tables();
+
     print_symbol_tables();
     return ret;
 }
