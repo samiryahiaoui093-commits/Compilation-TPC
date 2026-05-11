@@ -415,17 +415,13 @@ void parameters_from_function(Function *function){
     int index_hash;
     for(int i = 0; i <= function->argument_count -1;i++){
         parameter = variable_from_parameters(function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
-        printf("name : %s function_name: %s definition line :%d type : %s \n",function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
         cn = malloc(sizeof(Chained_Node));
         cn->key = strdup(function->argument_names[i]);;
         cn->next = NULL;
         cn->tag = VARIABLE;
         cn->variable = parameter;
-        printf("fonction crée");
-
         index_hash = hash_index(function->argument_names[i], 50);
         insert_list(cn,local_variable,index_hash);
-        printf("fonction inséré");
     }
 
 }

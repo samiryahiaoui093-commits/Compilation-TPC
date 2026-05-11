@@ -1,27 +1,11 @@
-struct aircraft {
-    int height, width;
-    struct aled suivant;
 
-};
-struct aled {
-    int height, width;
-    struct aircraft suivant,aled,chien;
-    struct caled chui,un,avion;
-
-};
-struct hot {
-    int  width;
-    struct aircraft suivant ,aret;
-
-};
-struct aled {
-    char v;
-    char f;
-    struct aircraft suivant;
-
-};
+void string(int un,char deux,struct str trois){
+    return;
 
 
+
+}
 int main(void){
+    string(a,b,c,d);
     return 0;
 }

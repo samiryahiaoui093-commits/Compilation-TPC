@@ -49,8 +49,9 @@ extern int yydebug;
 
     #include "ast.h"
     #include "symbol_table.h"
+    #include "semantic_tests.h"
 
-#line 54 "obj/grammar.h"
+#line 55 "obj/grammar.h"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -86,14 +87,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 22 "src/grammar.y"
+#line 24 "src/grammar.y"
 
     int intv;
     char charv;
     char* identv;
     Node* node;
 
-#line 97 "obj/grammar.h"
+#line 98 "obj/grammar.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

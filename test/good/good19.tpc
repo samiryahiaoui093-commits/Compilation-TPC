@@ -57,7 +57,7 @@ void arab(int a){
 
 
     char t,y,u,i;
-    return 0;
+    return ;
 }
 void t(void){
     return ;
@@ -91,6 +91,9 @@ int main(void){
         tess = arab(a);
         tess = arab(corde.height);
         tess = arab(arab(corde.height));
+    } else {
+       tess = tess + 9;
+        tess = tess * 9;
     }
 
     tess=0;

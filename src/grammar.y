@@ -1,6 +1,7 @@
 %code requires {
     #include "ast.h"
     #include "symbol_table.h"
+    #include "semantic_tests.h"
 }
 
 %{
@@ -8,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
+#include "semantic_tests.h"
 
 int yylex();
 void yyerror(const char *s);
@@ -16,7 +18,7 @@ extern int column;
 
 Node *root = NULL;
 char *function_name = NULL;   // nom de la fonction courante
-
+int error_count = 0;
 %}
 
 %union {
@@ -312,7 +314,7 @@ Instr:
         addChild($$, $3);
         addChild($$, $5);
         addChild(elsenode, $7);
-        addChild($$, elsenode);
+        addSibling($$, elsenode);
     }
     | WHILE '(' Exp ')' Instr {
         $$->line = lines;
@@ -478,6 +480,8 @@ int main(int argc, char **argv) {
     print_symbol_tables();
 
     print_symbol_tables();
+    printf("%d",error_count);
+
     return ret;
 }
 

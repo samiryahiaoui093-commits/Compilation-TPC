@@ -1,6 +1,6 @@
 #include "ast.h"
 #include "symbol_table.h"
-#include <locale>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,10 +10,9 @@
 /*
 Test a faire -
 
--assignasion de variable bien défini
--appel correcte des fonction  avec le bon nombre d'argument et les bon type
+
 -appel recursif autorisé
--appel de fonction défini
+
 -appel de variable du bon scope.
 - a ssignation du bon type
 -opération avec les bon type
@@ -31,9 +30,9 @@ Une variable globale ne peut être déclarée qu’une fois (2)
 -
 - create_variable (name,type);
 
-
-
-
+presence du main bien initialisé
+pas pouvoir utiliser une fonction comme une variable  et une variable comme une fonction
+vérifier qu'un appel de fonction peut bien etre utiliser dans une expression
 -- La table des symbole -
 dump les champs des structure dans les fields
 dump les parametre de fonction dans les variable locale
@@ -64,12 +63,78 @@ int assign_test(Node * assign_node,string function_name,Chained_Node * symbol_ta
     return TEST_FAILED;
 }
 
+string get_type(string variable_name, string function_name,Chained_Node * symbol_table[]){
+    Chained_Node *var= lookup(variable_name,function_name,symbol_table);
+    if(var){
+            return var->variable->type;
+        }
+    return NULL;
+}
 int function_call_test(Node * function_call,string function_name,Chained_Node * symbol_table[]){
+    Node * function_ident = function_call->firstChild;
+    Node * function_arguments = function_ident->nextSibling;
+    int argument_number = len_CL(function_arguments);
     Chained_Node * cn =lookup(function_call->firstChild->identv,function_name,symbol_table);
+    if (cn->function->argument_count != argument_number){
+        return TEST_FAILED;
+    } else {
+        int index = 0;
+        for(Node *current = function_arguments;current;current = current->nextSibling){
+            if (strcmp(get_type(current->identv,function_name,symbol_table),cn->function->argument_type[index]) != 0){
+                return TEST_FAILED;
+            }
+        }
+
+    }
     if( cn && cn->function->definition_line < function_call->line){
         return TEST_PASSED;
     }
     return TEST_FAILED;
+}
+
+
+int return_value_test(Node* return_node,string function_name){
+    Chained_Node * cn ;
+    if( return_node->firstChild){
+        switch(return_node->firstChild->label){
+            case NODE_NUM:
+              cn =lookup(function_name, function_name, functions_definitions);
+             if( strcmp(cn->variable->type,"int") == 0){
+                 return TEST_PASSED;
+             } else {
+                 return TEST_FAILED;
+             }
+            case NODE_CHAR:
+                 cn =lookup(function_name, function_name, functions_definitions);
+                if( strcmp(cn->variable->type,"char") == 0){
+                    return TEST_PASSED;
+                } else {
+                    return TEST_FAILED;
+                }
+                break;
+            case NODE_IDENT:
+                    cn =lookup(return_node->firstChild->identv, function_name, local_variable);
+                    if( strcmp(cn->variable->type,get_type(return_node->firstChild->identv, function_name, local_variable)) == 0){
+                        return TEST_PASSED;
+                    } else {
+                        return TEST_FAILED;
+                    }
+                    break;
+
+            default:
+        }
+    } else {
+        cn =lookup(function_name, function_name, functions_definitions);
+        if( strcmp(cn->function->type,"void") == 0){
+            return TEST_PASSED;
+        } else {
+            return TEST_FAILED;
+        }
+    }
+}
+
+int expression_evaluation_test(Node * expression){
+    return 0
 }
 
 void parse_instr(Node* instr,int *error_count,string function_name){
@@ -86,6 +151,12 @@ void parse_instr(Node* instr,int *error_count,string function_name){
             case NODE_IF:
                 // potentiel recursivité pour les if
                 parse_instr(current->firstChild->nextSibling,error_count,function_name);
+                if (current->nextSibling && current->nextSibling->label == NODE_ELSE){
+                    parse_instr(current->nextSibling->firstChild,error_count,function_name);
+                }
+                break;
+            case NODE_RETURN:
+                (*error_count)+=return_value_test(current,function_name);
                 break;
 
             default:
@@ -93,6 +164,7 @@ void parse_instr(Node* instr,int *error_count,string function_name){
         }
     }
 }
+
 
 int main(void){
 
