@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "symbol_table.c"
 #define TEST_FAILED 1
 #define TEST_PASSED 0
 /*

@@ -473,14 +473,13 @@ int main(int argc, char **argv) {
     parse_tree(root);
     for(int i = 0 ; i < 50 ; i++){
         dump_function_parameter(functions_definitions[i]);
-        if (functions_definitions[i])
-        printFunction(functions_definitions[i]->function);
+
     }
     printf("arbre parsé\n");
-    print_symbol_tables();
+
 
     print_symbol_tables();
-    printf("%d",error_count);
+    printf("%d\n",error_count);
 
     return ret;
 }

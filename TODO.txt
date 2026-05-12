@@ -1,17 +1,14 @@
-Faire la table des symbole
 
--Table des symbole
-Fonctions
-Variable global
-Variable local
-Structures initialisé
-Structure déclarer
+- Analyse Sémantique
 
-faire un tableau des appels de fonction pour vérifier que la définition est présente et quelle soit bien respecter
+- modifier l'insertion pour que la clée d'insertion soit nom+ scope pour faire en sort que les clée si elle porte le meme nom ne soit pas au meme endroit
+-modifier le lookup pour quelle regarde la liste chainer pour voir si y'a l'élément qu'on cherche plutot que le premier trouvé
+-faire les test :
+     vérification de l'assignation des champ
+     vérification des variable dans les expression
+     verification que les variable ont un nom unique
+ajouts des Warnings
 
-- Integrer les insertion pour la table des symbole
-- Fonction pour crée une variable des différent type
-Noeud arbre -> create Variable -> Create  Chained node -> Insert
-- effecteur des lookup sur les instruction pour verifier
-pour les structure et fonction , potentiel liste chaine pour stoquer les arguments
--
+- Table des symbole
+    ajouts des champs dans une table champs de structure
+    table de symbole pour chaque fonction

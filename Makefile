@@ -9,6 +9,7 @@ LEXER = lexeur
 PARSER = grammar
 TREE = ast
 SYMBOL = symbol_table
+SEMANTIC = semantic_tests
 
 OBJS = $(OBJ)$(LEXER).o \
        $(OBJ)$(PARSER).o \
@@ -39,6 +40,9 @@ $(OBJ)$(TREE).c: $(SRC)$(TREE).c
 	cp $< $@
 
 $(OBJ)$(SYMBOL).c: $(SRC)$(SYMBOL).c
+	cp $< $@
+
+$(OBJ)$(SEMANTIC).c: $(SRC)$(SEMANTIC).c
 	cp $< $@
 
 # Dossiers

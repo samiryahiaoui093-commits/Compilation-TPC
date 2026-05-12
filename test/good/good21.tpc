@@ -1,5 +1,7 @@
 
 void string(int un,char deux,struct str trois){
+    int a,b,c,d;
+    char e,f,g,h;
     return;
 
 
