@@ -14,8 +14,8 @@ SEMANTIC = semantic_tests
 OBJS = $(OBJ)$(LEXER).o \
        $(OBJ)$(PARSER).o \
        $(OBJ)$(TREE).o \
-       $(OBJ)$(SYMBOL).o
-
+       $(OBJ)$(SYMBOL).o \
+       $(OBJ)$(SEMANTIC).o
 TARGET = $(BIN)tpcas
 
 all: $(TARGET)

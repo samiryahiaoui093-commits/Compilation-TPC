@@ -8,6 +8,6 @@ void string(int un,char deux,struct str trois){
 
 }
 int main(void){
-    string(a,b,c,d);
+    char a,b,c,d;
     return 0;
 }

@@ -4,13 +4,12 @@
 #include "symbol_table.h"
 #include <string.h>
 #include <strings.h>
-#include "ast.h"
+#include "semantic_tests.h"
 
 /* =========================
    GLOBAL TABLES
 ========================= */
 
-Chained_Node *local_variable[SYMBOL_TABLE_SIZE] = {0};
 Chained_Node *global_variable[SYMBOL_TABLE_SIZE] = {0};
 Chained_Node *functions_definitions[SYMBOL_TABLE_SIZE] = {0};
 Chained_Node *structure_definitions[SYMBOL_TABLE_SIZE] = {0};
@@ -387,9 +386,7 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
 
 }
 
-Chained_Node *lookup_hash(char* key,
-                          string function_scope,
-                          Chained_Node* lst[]) {
+Chained_Node *lookup_hash(char* key,string function_scope,Chained_Node* lst[]) {
 
     if (!key)
         return NULL;
@@ -494,37 +491,98 @@ void parse_tree(Node* root) {
                 : fn_section;
             Node *header = fn_to_parse->firstChild;
 
-            Node *typeNode =
-                (header->firstChild && header->firstChild->label == NODE_STRUCT)
-                ? header->firstChild->firstChild
-                : header->firstChild;
-
-            Node *identNode = (typeNode) ? typeNode->nextSibling : NULL;
+            
 
             for (Node *curr_fn = fn_to_parse; curr_fn; curr_fn = curr_fn->nextSibling) {
-                if (curr_fn->label != NODE_DECLFNCT) continue;
 
-                insert_hash(curr_fn, functions_definitions);
+    if (curr_fn->label != NODE_DECLFNCT)
+        continue;
 
-                Node *body = get_function_body(curr_fn);
+    Node *header = curr_fn->firstChild;
 
-                if (body &&
-                    body->firstChild &&
-                    body->firstChild->label == NODE_VARS) {
+    Node *typeNode =
+        (header->firstChild &&
+         header->firstChild->label == NODE_STRUCT)
+        ? header->firstChild->firstChild
+        : header->firstChild;
 
-                    for (Node *l_var = body->firstChild->firstChild;l_var;l_var = l_var->nextSibling) {
-                        Chained_Node *cn = lookup_hash(identNode->identv, identNode->identv, functions_definitions);
-                        if( cn){ insert_hash(l_var, cn->symbol_table);} else {
-                            printf("aled %s \n",identNode->identv );
-                        }
-                    }
-                }
+    Node *identNode =
+        (typeNode) ? typeNode->nextSibling : NULL;
+
+    insert_hash(curr_fn, functions_definitions);
+
+    Node *body = get_function_body(curr_fn);
+
+    if (body &&
+        body->firstChild &&
+        body->firstChild->label == NODE_VARS) {
+
+        for (Node *l_var = body->firstChild->firstChild;
+             l_var;
+             l_var = l_var->nextSibling) {
+
+            Chained_Node *cn =
+                lookup_hash(
+                    identNode->identv,
+                    identNode->identv,
+                    functions_definitions
+                );
+
+            if (cn) {
+                insert_hash(l_var, cn->symbol_table);
             }
+        }
+    }
+}
         }
 
         fn_section = fn_section->nextSibling;
     }
 }
+
+/*
+for (Node *curr_fn = fn_to_parse; curr_fn; curr_fn = curr_fn->nextSibling) {
+
+    if (curr_fn->label != NODE_DECLFNCT)
+        continue;
+
+    Node *header = curr_fn->firstChild;
+
+    Node *typeNode =
+        (header->firstChild &&
+         header->firstChild->label == NODE_STRUCT)
+        ? header->firstChild->firstChild
+        : header->firstChild;
+
+    Node *identNode =
+        (typeNode) ? typeNode->nextSibling : NULL;
+
+    insert_hash(curr_fn, functions_definitions);
+
+    Node *body = get_function_body(curr_fn);
+
+    if (body &&
+        body->firstChild &&
+        body->firstChild->label == NODE_VARS) {
+
+        for (Node *l_var = body->firstChild->firstChild;
+             l_var;
+             l_var = l_var->nextSibling) {
+
+            Chained_Node *cn =
+                lookup_hash(
+                    identNode->identv,
+                    identNode->identv,
+                    functions_definitions
+                );
+
+            if (cn) {
+                insert_hash(l_var, cn->symbol_table);
+            }
+        }
+    }
+}
+*/
 
 void dump_function_parameter(Chained_Node * node){
     if(node){

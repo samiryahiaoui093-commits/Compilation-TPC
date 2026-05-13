@@ -1,10 +1,10 @@
 #include "ast.h"
 #include "symbol_table.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+
+
 #include <string.h>
-#include "symbol_table.c"
+
 #define TEST_FAILED 1
 #define TEST_PASSED 0
 /*
@@ -46,14 +46,24 @@ dump les parametre de fonction dans les variable locale
 
 
 Chained_Node* lookup(string variable_name,string function_scope,Chained_Node* symbol_table[]){
-    Chained_Node *searched = lookup_hash(variable_name,function_scope,symbol_table);
-    if (searched) {
-        return searched;
+    Chained_Node * cn ;
+    if (!function_scope){ // Fonctions
+        return lookup_hash(variable_name, NULL, functions_definitions);
     } else {
+        Chained_Node * fnct = lookup_hash(variable_name, NULL, functions_definitions);
+        if (fnct){
+            cn = lookup_hash(variable_name, function_scope, fnct->symbol_table);
+            if(cn) return cn;
+            return lookup_hash(function_scope, "global", global_variable);
+        }
         return NULL;
     }
-}
 
+    return NULL;
+    }
+int assign_field_test(){
+    return 0;
+}
 // Fonction pour tester si les variable utilisé dans la L-value
 int assign_test(Node * assign_node,string function_name,Chained_Node * symbol_table[]){
     Chained_Node * vr = lookup(assign_node->firstChild->identv,function_name,symbol_table);
@@ -113,8 +123,8 @@ int return_value_test(Node* return_node,string function_name){
                 }
                 break;
             case NODE_IDENT:
-                    cn =lookup(return_node->firstChild->identv, function_name, local_variable);
-                    if( strcmp(cn->variable->type,get_type(return_node->firstChild->identv, function_name, local_variable)) == 0){
+                    cn =lookup(return_node->firstChild->identv, function_name, functions_definitions);
+                    if( strcmp(cn->variable->type,get_type(return_node->firstChild->identv, function_name, functions_definitions)) == 0){
                         return TEST_PASSED;
                     } else {
                         return TEST_FAILED;
@@ -122,6 +132,7 @@ int return_value_test(Node* return_node,string function_name){
                     break;
 
             default:
+                     break;
         }
     } else {
         cn =lookup(function_name, function_name, functions_definitions);
@@ -131,6 +142,7 @@ int return_value_test(Node* return_node,string function_name){
             return TEST_FAILED;
         }
     }
+    return TEST_FAILED;
 }
 
 int expression_evaluation_test(Node * expression){
@@ -142,7 +154,7 @@ void parse_instr(Node* instr,int *error_count,string function_name){
     for(Node *current = instr; current ; current = current->nextSibling){
         switch (current->label) {
             case NODE_ASSIGN:
-                (*error_count)+= assign_test(current,function_name,local_variable);
+                (*error_count)+= assign_test(current,function_name,functions_definitions);
                 break;
 
             case NODE_FUNCTION_CALL:
@@ -160,7 +172,67 @@ void parse_instr(Node* instr,int *error_count,string function_name){
                 break;
 
             default:
-
+                    break;
         }
+    }
+}
+
+int global_name_duplicate_test(string name){
+    if(lookup(name,NULL,functions_definitions) || lookup(name,NULL,global_variable)  ) {
+        return TEST_FAILED;
+    }
+    return TEST_PASSED;
+}
+Node * get_instr(Node * node);
+int legal_local_variable_name_test(string name,string function_name,Chained_Node *symbol_table[]){
+    Chained_Node* cn = lookup_hash(name, function_name,symbol_table);
+    if (cn){
+        return TEST_FAILED;
+    }
+    return TEST_PASSED;
+}
+
+// getint getchar putchar put int
+int legal_function_name_test(string name){
+    string illegal_name[] = {"getint","getchar","putchar","putint"};
+    for(int i = 0; i < 4 ; i ++){
+        if(strcmp(name,illegal_name[i]) == 0){
+            return TEST_FAILED;
+        }}
+    return TEST_PASSED;
+}
+
+
+void test_tree(Node* root,int * error_count) {
+    if (!root || root->label != NODE_PROGRAM) return;
+
+    Node *global_decls = root->firstChild;
+    Node *fn_section = (global_decls) ? global_decls->nextSibling : root->firstChild;
+
+    while (fn_section) {
+        if (fn_section->label == NODE_FNCS || fn_section->label == NODE_DECLFNCT) {
+
+            Node *fn_to_parse =(fn_section->label == NODE_FNCS)? fn_section->firstChild: fn_section;
+            Node *header = fn_to_parse->firstChild;
+            for (Node *curr_fn = fn_to_parse; curr_fn; curr_fn = curr_fn->nextSibling) {
+
+                if (curr_fn->label != NODE_DECLFNCT)
+                    continue;
+
+                Node *header = curr_fn->firstChild;
+                Node *typeNode =(header->firstChild && header->firstChild->label == NODE_STRUCT) ? header->firstChild->firstChild: header->firstChild;
+                Node *identNode = (typeNode) ? typeNode->nextSibling : NULL;
+                insert_hash(curr_fn, functions_definitions);
+                Node *body = get_function_body(curr_fn);
+                Node *instr = body->firstChild->nextSibling;
+                for(Node *current_instruction = instr->firstChild; current_instruction ; current_instruction = current_instruction){
+                    parse_instr(current_instruction, error_count, identNode->identv);
+                }       
+                }
+            
+            }
+        
+
+        fn_section = fn_section->nextSibling;
     }
 }

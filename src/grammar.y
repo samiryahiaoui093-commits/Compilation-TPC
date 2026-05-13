@@ -479,6 +479,7 @@ int main(int argc, char **argv) {
 
 
     print_symbol_tables();
+    test_tree(root,&error_count);
     printf("%d\n",error_count);
 
     return ret;

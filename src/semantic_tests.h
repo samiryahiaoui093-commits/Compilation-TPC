@@ -11,3 +11,4 @@ int expression_evaluation_test(Node * expression);
 void parse_instr(Node* instr,int *error_count,string function_name);
 int function_call_test(Node * function_call,string function_name,Chained_Node * symbol_table[]);
 int return_value_test(Node* return_node,string function_name);
+void test_tree(Node* root,int * error_count);
