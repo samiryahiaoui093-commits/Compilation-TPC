@@ -2,7 +2,7 @@
 #define SYMBOL_TABLE_UTILS_H
 
 #include "ast.h"
-
+#define SYMBOL_TABLE_SIZE 50
 /* =========================
    TYPES
 ========================= */
@@ -38,6 +38,7 @@ typedef struct {
     string *argument_names;
     int argument_count;
     int definition_line;
+
 } Function;
 
 typedef struct Structure {
@@ -57,6 +58,7 @@ typedef struct Chained_Node {
         Structure* structure;
         Function* function;
     };
+    struct Chained_Node** symbol_table;
     struct Chained_Node *next;
 } Chained_Node;
 
@@ -127,14 +129,14 @@ Chained_Node *lookup_hash(char* key, string function_scope, Chained_Node* lst[])
 ========================= */
 
 void field_from_struct(Structure structure);
-void parameters_from_function(Function *function);
+void parameters_from_function(Chained_Node *cnf);
 
 /* =========================
    DEBUG / PRINT
 ========================= */
 
 void printFunction(Function *f);
-void print_chain(Chained_Node *node);
+void print_chain(Chained_Node *node, int indent);
 void print_symbol_tables();
 
 /* =========================

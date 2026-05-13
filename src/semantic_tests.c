@@ -1,6 +1,7 @@
 #include "ast.h"
 #include "symbol_table.h"
 
+#include <functional>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,7 +54,9 @@ Chained_Node* lookup(string variable_name,string function_scope,Chained_Node* sy
         return NULL;
     }
 }
+int assign_field_test(){
 
+}
 // Fonction pour tester si les variable utilisé dans la L-value
 int assign_test(Node * assign_node,string function_name,Chained_Node * symbol_table[]){
     Chained_Node * vr = lookup(assign_node->firstChild->identv,function_name,symbol_table);
@@ -163,4 +166,29 @@ void parse_instr(Node* instr,int *error_count,string function_name){
 
         }
     }
+}
+
+int global_name_duplicate_test(string name){
+    if(lookup(name,NULL,functions_definitions) || lookup(name,NULL,global_variable)  ) {
+        return TEST_FAILED;
+    }
+    return TEST_PASSED;
+}
+
+int legal_local_variable_name_test(string name,string function_name,Chained_Node *symbol_table[]){
+    Chained_Node* cn = lookup_hash(name, function_name,symbol_table);
+    if (cn){
+        return TEST_FAILED;
+    }
+    return TEST_PASSED;
+}
+
+// getint getchar putchar put int
+int legal_function_name_test(string name){
+    string illegal_name[] = {"getint","getchar","putchar","putint"};
+    for(int i = 0; i < 4 ; i ++){
+        if(strcmp(name,illegal_name[i]) == 0){
+            return TEST_FAILED;
+        }}
+    return TEST_PASSED;
 }

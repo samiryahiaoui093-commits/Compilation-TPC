@@ -10,10 +10,10 @@
    GLOBAL TABLES
 ========================= */
 
-Chained_Node *local_variable[50] = {0};
-Chained_Node *global_variable[50] = {0};
-Chained_Node *functions_definitions[50] = {0};
-Chained_Node *structure_definitions[50] = {0};
+Chained_Node *local_variable[SYMBOL_TABLE_SIZE] = {0};
+Chained_Node *global_variable[SYMBOL_TABLE_SIZE] = {0};
+Chained_Node *functions_definitions[SYMBOL_TABLE_SIZE] = {0};
+Chained_Node *structure_definitions[SYMBOL_TABLE_SIZE] = {0};
 
 /* =========================
    UTILITIES
@@ -38,6 +38,7 @@ int argument_count(Node* node) {
 /* =========================
    ARGUMENTS
 ========================= */
+
 
 void transfer_arguments(Node *list, string arguments_type[], string arguments_name[]) {
     if (!list) return;
@@ -303,6 +304,7 @@ Chained_Node *create_chained_node(Node* node) {
             chained_node->function = create_function(node);
             if (!chained_node->function) return NULL;
             chained_node->key = strdup(chained_node->function->name);
+            chained_node->symbol_table = calloc(SYMBOL_TABLE_SIZE, sizeof(Chained_Node*));
             break;
 
         case NODE_DECLSTRUCT:
@@ -366,7 +368,7 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
         for(Node* current = node->firstChild->nextSibling;current;current = current->nextSibling){
 
             Chained_Node * cn = (Chained_Node*)malloc(sizeof(Chained_Node));
-            int index = hash_index(current->identv, 50);
+            int index = hash_index(current->identv, SYMBOL_TABLE_SIZE);
             cn->variable = variable_from_parameters(current->identv,node->function_name,node->definition_line,node->firstChild->identv);
             cn->key = strdup(current->identv);
             cn->tag = VARIABLE;
@@ -379,51 +381,59 @@ void insert_hash(Node* node, Chained_Node* lst[]) {
     } else {
     elem = create_chained_node(node);
     if (!elem || !elem->key) return;
-    int index = hash_index(elem->key, 50);
+    int index = hash_index(elem->key, SYMBOL_TABLE_SIZE);
     insert_list(elem, lst, index);
     }
 
 }
 
-Chained_Node * lookup_hash(char* key,string function_scope, Chained_Node* lst[]) {
-    if (!key) return NULL;
+Chained_Node *lookup_hash(char* key,
+                          string function_scope,
+                          Chained_Node* lst[]) {
 
-    int index = hash_index(key, 50);
+    if (!key)
+        return NULL;
+
+    int index = hash_index(key, SYMBOL_TABLE_SIZE);
+
     Chained_Node* curr = lst[index];
 
     while (curr) {
-        if (strcmp(curr->key, key) == 0 ) {
-            if (curr->tag == VARIABLE && curr->variable) {
-                if (curr->variable->function_name && function_scope &&
-                    strcmp(curr->variable->function_name, function_scope) == 0) {
-                    return curr;
-    }
-}
-        }
+
+        if (strcmp(curr->key, key) == 0) {
+            if (curr->tag == VARIABLE) {
+                if (!function_scope)
+                    return curr;            /* VARIABLES */
+                if (curr->variable && curr->variable->function_name && strcmp(curr->variable->function_name,function_scope) == 0) {
+                    return curr;}
+            }
+            else if (curr->tag == FUNCTION) {
+                return curr;
+            }
+            else if (curr->tag == STRUCTURE) {
+                return curr;
+            }}
         curr = curr->next;
     }
-
-    return NULL; // not found
+    return NULL;
 }
-
 void field_from_struct(Structure structure){
 
 }
-void parameters_from_function(Function *function){
+void parameters_from_function(Chained_Node *cnf){
     Variable * parameter;
     Chained_Node * cn;
     int index_hash;
-    for(int i = 0; i <= function->argument_count -1;i++){
-        parameter = variable_from_parameters(function->argument_names[i],function->name,function->definition_line,function->argument_type[i]);
+    for(int i = 0; i <= cnf->function->argument_count -1;i++){
+        parameter = variable_from_parameters(cnf->function->argument_names[i],cnf->function->name,cnf->function->definition_line,cnf->function->argument_type[i]);
         cn = malloc(sizeof(Chained_Node));
-        cn->key = strdup(function->argument_names[i]);;
+        cn->key = strdup(cnf->function->argument_names[i]);;
         cn->next = NULL;
         cn->tag = VARIABLE;
         cn->variable = parameter;
-        index_hash = hash_index(function->argument_names[i], 50);
-        insert_list(cn,local_variable,index_hash);
+        index_hash = hash_index(cnf->function->argument_names[i], SYMBOL_TABLE_SIZE);
+        insert_list(cn,cnf->symbol_table,index_hash);
     }
-
 }
 /* =========================
    FUNCTION DEBUG
@@ -457,9 +467,7 @@ Node *get_function_body(Node *function) {
         : NULL;
 }
 
-/* =========================
-   MAIN SYMBOL TABLE PASS
-========================= */
+
 
 void parse_tree(Node* root) {
     if (!root || root->label != NODE_PROGRAM) return;
@@ -484,6 +492,14 @@ void parse_tree(Node* root) {
                 (fn_section->label == NODE_FNCS)
                 ? fn_section->firstChild
                 : fn_section;
+            Node *header = fn_to_parse->firstChild;
+
+            Node *typeNode =
+                (header->firstChild && header->firstChild->label == NODE_STRUCT)
+                ? header->firstChild->firstChild
+                : header->firstChild;
+
+            Node *identNode = (typeNode) ? typeNode->nextSibling : NULL;
 
             for (Node *curr_fn = fn_to_parse; curr_fn; curr_fn = curr_fn->nextSibling) {
                 if (curr_fn->label != NODE_DECLFNCT) continue;
@@ -497,8 +513,10 @@ void parse_tree(Node* root) {
                     body->firstChild->label == NODE_VARS) {
 
                     for (Node *l_var = body->firstChild->firstChild;l_var;l_var = l_var->nextSibling) {
-
-                        insert_hash(l_var, local_variable);
+                        Chained_Node *cn = lookup_hash(identNode->identv, identNode->identv, functions_definitions);
+                        if( cn){ insert_hash(l_var, cn->symbol_table);} else {
+                            printf("aled %s \n",identNode->identv );
+                        }
                     }
                 }
             }
@@ -512,7 +530,7 @@ void dump_function_parameter(Chained_Node * node){
     if(node){
         for (Chained_Node *c = node; c; c = c->next) {
             if (c)
-            parameters_from_function(c->function);
+            parameters_from_function(c);
 
             }
 
@@ -521,29 +539,34 @@ void dump_function_parameter(Chained_Node * node){
 
 }
 void dump_all_parameter(){
-    for(int i = 0; i < 50 ; i++){
+    for(int i = 0; i < SYMBOL_TABLE_SIZE ; i++){
         printf("%d",i);
         dump_function_parameter(functions_definitions[i]);
     }
 }
-void print_chain(Chained_Node *node) {
+void print_chain(Chained_Node *node, int indent) {
     for (Chained_Node *c = node; c; c = c->next) {
-        if (!c) continue;
+
+        for (int i = 0; i < indent; i++)
+            printf(" ");
 
         switch (c->tag) {
 
             case VARIABLE:
                 if (c->variable) {
-                    printf("[VAR] %s : %s (line %d) function - %s\n",
+                    printf("[VAR] %s : %s (line %d)",
                         c->variable->name,
                         c->variable->type,
-                        c->variable->definition_line,
-                        c->variable->function_name);
+                        c->variable->definition_line);
+
+                    if (c->variable->function_name)
+                        printf(" function - %s", c->variable->function_name);
+
+                    printf("\n");
                 }
                 break;
 
             case FUNCTION:
-
                 if (c->function) {
 
                     printf("[FUNC] %s : %s (args=%d, line %d)\n",
@@ -551,6 +574,21 @@ void print_chain(Chained_Node *node) {
                         c->function->type,
                         c->function->argument_count,
                         c->function->definition_line);
+
+                    /* afficher la table locale de la fonction */
+                    if (c->symbol_table) {
+
+                        for (int i = 0; i < indent + 4; i++)
+                            printf(" ");
+
+                        printf("Local Symbol Table:\n");
+
+                        for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+                            if (c->symbol_table[i]) {
+                                print_chain(c->symbol_table[i], indent + 8);
+                            }
+                        }
+                    }
                 }
                 break;
 
@@ -568,6 +606,7 @@ void print_chain(Chained_Node *node) {
     }
 }
 
+
 /* =========================
    PRINT FULL TABLE
 ========================= */
@@ -575,20 +614,22 @@ void print_chain(Chained_Node *node) {
 void print_symbol_tables() {
 
     printf("\n========== GLOBAL VARIABLES ==========\n");
-    for (int i = 0; i < 50; i++)
-        print_chain(global_variable[i]);
-
-    printf("\n========== LOCAL VARIABLES ==========\n");
-    for (int i = 0; i < 50; i++)
-        print_chain(local_variable[i]);
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        if (global_variable[i])
+            print_chain(global_variable[i], 0);
+    }
 
     printf("\n========== FUNCTIONS ==========\n");
-    for (int i = 0; i < 50; i++)
-        print_chain(functions_definitions[i]);
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        if (functions_definitions[i])
+            print_chain(functions_definitions[i], 0);
+    }
 
     printf("\n========== STRUCTURES ==========\n");
-    for (int i = 0; i < 50; i++)
-        print_chain(structure_definitions[i]);
+    for (int i = 0; i < SYMBOL_TABLE_SIZE; i++) {
+        if (structure_definitions[i])
+            print_chain(structure_definitions[i], 0);
+    }
 
     printf("\n======================================\n");
 }
