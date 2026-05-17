@@ -3,15 +3,23 @@
     {
       "name": "Default",
       "files": [
+        "src/semantic_tests.c",
+        ".vscode/changelists.json",
         "obj/grammar.o",
         "obj/lexeur.o",
-        "src/symbol_table.c",
+        "obj/semantic_tests.c",
         "obj/symbol_table.c",
-        ".vscode/changelists.json",
-        "bin/tpcas",
         "obj/symbol_table.o",
+        "bin/tpcas",
+        "obj/semantic_tests.o",
+        "src/symbol_table.h",
+        "src/symbol_table.c",
+        "src/semantic_tests.h",
         "src/grammar.y",
-        "obj/grammar.c"
+        "obj/ast.o",
+        "obj/grammar.c",
+        "test/good/good19.tpc",
+        "test/good/good21.tpc"
       ]
     }
   ],

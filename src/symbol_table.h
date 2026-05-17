@@ -3,6 +3,7 @@
 
 #include "ast.h"
 #define SYMBOL_TABLE_SIZE 50
+
 /* =========================
    TYPES
 ========================= */
@@ -17,6 +18,9 @@ typedef enum {
     STRUCTURE,
     VARIABLE
 } Tables;
+
+/* Forward declarations */
+typedef struct Chained_Node Chained_Node;
 
 typedef struct {
     string name;
@@ -36,40 +40,38 @@ typedef struct {
     string type;
     string *argument_type;
     string *argument_names;
+    Chained_Node **symbol_table;   /* per-function local symbol table */
     int argument_count;
     int definition_line;
-
 } Function;
 
 typedef struct Structure {
     string name;
     Tables table;
     string function_name;
+    Chained_Node **local_fields;   /* per-struct field table */
     string *argument_type;
     string *argument_names;
     int definition_line;
 } Structure;
 
-typedef struct Chained_Node {
-    string key;
-    Tables tag;
-    union {
-        Variable *variable;
-        Structure* structure;
-        Function* function;
-    };
-    struct Chained_Node** symbol_table;
-    struct Chained_Node *next;
-} Chained_Node;
+struct Chained_Node {
+    string      key;
+    Tables      tag;
+    Variable   *variable;
+    Function   *function;
+    Structure  *structure;
+    Chained_Node **symbol_table;   /* alias to function->symbol_table when tag==FUNCTION */
+    Chained_Node  *next;
+};
 
 /* =========================
    GLOBAL TABLES
 ========================= */
 
-extern Chained_Node *local_variable[50];
-extern Chained_Node *global_variable[50];
-extern Chained_Node *functions_definitions[50];
-extern Chained_Node *structure_definitions[50];
+extern Chained_Node *global_variable[SYMBOL_TABLE_SIZE];
+extern Chained_Node *functions_definitions[SYMBOL_TABLE_SIZE];
+extern Chained_Node *structure_definitions[SYMBOL_TABLE_SIZE];
 
 /* =========================
    UTILITIES

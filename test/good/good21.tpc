@@ -1,13 +1,15 @@
 
 void string(int un,char deux,struct str trois){
-    int a,b,c,d;
-    char e,f,g,h;
+    char deux;
     return;
 
-
+int arab(int a,int b){
+    return 4;
+}
 
 }
 int main(void){
-    char a,b,c,d;
+    int a,b;
+    arab(a,b);
     return 0;
 }

@@ -51,7 +51,7 @@ void arab(int a){
         int height, width;
         struct aircraft suivant;
     };
-    int c,b,n,f;
+    int c,c,b,n,f;
 
 
 
@@ -78,6 +78,7 @@ int main(void){
     int tess;
     int sat;
     char v;
+    int a;
     int a;
     int b;
      my_plane.height = 4;

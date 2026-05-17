@@ -18,7 +18,7 @@ extern int column;
 
 Node *root = NULL;
 char *function_name = NULL;   // nom de la fonction courante
-int error_count = 0;
+
 %}
 
 %union {
@@ -470,19 +470,24 @@ int main(int argc, char **argv) {
                    "-h or -help will show the option available for the user.");
         }
     }
-    parse_tree(root);
+   
     for(int i = 0 ; i < 50 ; i++){
         dump_function_parameter(functions_definitions[i]);
 
     }
+    parse_tree(root);
     printf("arbre parsé\n");
 
 
     print_symbol_tables();
     test_tree(root,&error_count);
     printf("%d\n",error_count);
-
-    return ret;
+    if( error_count > 0){
+        return 2;
+    } else {
+        return ret;
+    }
+    
 }
 
 void yyerror(const char *s) {
